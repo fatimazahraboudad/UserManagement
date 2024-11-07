@@ -1,8 +1,13 @@
 package com.project.UserService.controllers;
 
+import com.project.UserService.dtos.JwtAuthenticationResponse;
+import com.project.UserService.dtos.SignInRequest;
 import com.project.UserService.dtos.UserDto;
 import com.project.UserService.services.UserService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -13,6 +18,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/users")
 @RequiredArgsConstructor
+@Slf4j
 public class UserController {
 
     private final UserService userService;
@@ -42,6 +48,17 @@ public class UserController {
         return new ResponseEntity<>(userService.updateStatus(idUser), HttpStatus.OK);
     }
 
+    @PostMapping("/login")
+    public ResponseEntity<JwtAuthenticationResponse> login(@RequestBody SignInRequest singInd)  {
+        return new ResponseEntity<>(userService.signIn(singInd), HttpStatus.OK);
+    }
+
+    @GetMapping("/logout")
+    public ResponseEntity<String> logout(HttpServletRequest request, HttpServletResponse response) {
+        userService.logout(request, response);
+        log.info("logout ");
+        return ResponseEntity.status(HttpStatus.OK).body("Logged out successfully");
+    }
 
 
 }

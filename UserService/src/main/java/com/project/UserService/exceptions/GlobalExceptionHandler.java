@@ -18,6 +18,15 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(AlreadyExistException.class)
+    public ResponseEntity<String> handleAlreadyExistUser(AlreadyExistException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);
+    }
+    @ExceptionHandler(InvalidEmailOrPasswordException.class)
+    public ResponseEntity<String> handleInvalidEmailOrPassword(InvalidEmailOrPasswordException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
         Map<String, String> errors = new HashMap<>();
