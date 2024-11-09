@@ -28,6 +28,7 @@ public class User implements UserDetails {
     private String address;
     private boolean enabled;
     private String password;
+    private boolean emailVerified;
 
 
     @Column(name = "createdAt", nullable = false, updatable = false)

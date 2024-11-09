@@ -3,7 +3,9 @@ package com.project.UserService.controllers;
 import com.project.UserService.dtos.JwtAuthenticationResponse;
 import com.project.UserService.dtos.SignInRequest;
 import com.project.UserService.dtos.UserDto;
+import com.project.UserService.services.EmailService;
 import com.project.UserService.services.UserService;
+import io.jsonwebtoken.Jwts;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +24,7 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
+    private final EmailService emailService;
 
     @PostMapping("/register")
     public ResponseEntity<UserDto> addNewUser(@Validated @RequestBody UserDto userDto) {
@@ -59,6 +62,22 @@ public class UserController {
         log.info("logout ");
         return ResponseEntity.status(HttpStatus.OK).body("Logged out successfully");
     }
+
+//    @GetMapping("/token/{idUser}")
+//    public ResponseEntity<String> token(@PathVariable String idUser) {
+//        return ResponseEntity.status(HttpStatus.OK).body(userService.generateToken(idUser));
+//    }
+
+    @GetMapping("/verify/mail/{idUser}")
+    public ResponseEntity<String> verify(@PathVariable String idUser) {
+        return new ResponseEntity<>( userService.verifyEmailWithSendingEmail(idUser), HttpStatus.OK);
+    }
+
+    @GetMapping("/verify/{token}")
+    public ResponseEntity<String> verifyEmail(@PathVariable("token") String token) {
+       return new ResponseEntity<>(userService.verifyEmail(token), HttpStatus.OK);
+    }
+
 
 
 }

@@ -40,7 +40,8 @@ public class SecurityConfig {
     private static final String[] WHITE_LIST_URL = {
             "/users/logout",
             "/users/register",
-            "/users/login"
+            "/users/login",
+            "/users/verify/**"
     };
 
     private final UserRepository userRepository;

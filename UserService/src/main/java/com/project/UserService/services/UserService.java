@@ -23,4 +23,10 @@ public interface UserService {
     JwtAuthenticationResponse signIn(SignInRequest request);
     void logout(HttpServletRequest request, HttpServletResponse response);
 
+    String generateToken(String idUser);
+
+    String verifyEmail(String token);
+
+    String verifyEmailWithSendingEmail(String idUser);
+
 }

@@ -6,13 +6,20 @@ import com.project.UserService.dtos.UserDto;
 import com.project.UserService.entities.User;
 import com.project.UserService.exceptions.AlreadyExistException;
 import com.project.UserService.exceptions.InvalidEmailOrPasswordException;
+import com.project.UserService.exceptions.TokenExpiredException;
 import com.project.UserService.exceptions.UserNotFoundException;
 import com.project.UserService.mappers.UserMapper;
 import com.project.UserService.repositories.UserRepository;
 import com.project.UserService.security.JwtTokenProvider;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.Jwts;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -22,6 +29,7 @@ import jakarta.servlet.http.Cookie;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -30,12 +38,16 @@ import java.util.UUID;
 @Slf4j
 public class UserServiceImpl implements UserService{
 
+    @Value("${token.signing.key}")
+    private String secretKey;
+
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     private final JwtTokenProvider jwtTokenProvider;
     private final AuthenticationManager authenticationManager;
 
+    private final EmailService emailService;
     @Override
     public UserDto addUser(UserDto userDto) {
         if(userRepository.findByEmailIgnoreCase(userDto.getEmail()).isPresent()){
@@ -44,6 +56,7 @@ public class UserServiceImpl implements UserService{
         User user = UserMapper.mapper.toEntity(userDto);
         user.setIdUser(UUID.randomUUID().toString());
         user.setEnabled(false);
+        user.setEmailVerified(false);
         user.setPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
         return UserMapper.mapper.toDto(userRepository.save(user));
     }
@@ -137,4 +150,43 @@ public class UserServiceImpl implements UserService{
             }
         }
     }
+
+    @Override
+    public String verifyEmailWithSendingEmail(String idUser) {
+        String token = generateToken(idUser);
+        emailService.sendVerificationEmail(helper(idUser),token);
+        return "please check your mail!";
+    }
+
+    @Override
+    public String generateToken(String idUser) {
+        return jwtTokenProvider.generateEmailVerificationToken(idUser);
+    }
+
+    @Override
+    public String verifyEmail(String token) {
+        try {
+            Claims claims = Jwts.parser()
+                    .setSigningKey(secretKey)
+                    .parseClaimsJws(token)
+                    .getBody();
+
+            String userId = claims.getSubject();
+
+            User user = helper(userId);
+            if (user.isEmailVerified()) {
+                return "Email already verified";
+            }
+            user.setEmailVerified(true);
+            userRepository.save(user);
+            return "Email verified";
+
+        } catch (ExpiredJwtException e) {
+            throw new TokenExpiredException();
+        } catch (Exception e) {
+            return "An error occurred during email verification.";
+        }
+    }
+
+
 }
