@@ -15,11 +15,11 @@ public class EmailService {
 
     public void sendVerificationEmail(User user, String token) {
         String link = "http://localhost:8081/api/users/verify/" + token;
-        String message = "Merci de vérifier votre email en cliquant sur le lien suivant : " + link;
+        String message = "Please verify your email by clicking on the following link: " + link;
 
         SimpleMailMessage email = new SimpleMailMessage();
         email.setTo(user.getEmail());
-        email.setSubject("Vérification de votre email");
+        email.setSubject("Verifying your email");
         email.setText(message);
 
         mailSender.send(email);

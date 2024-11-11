@@ -18,10 +18,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import jakarta.servlet.http.HttpServletResponse;
@@ -158,6 +157,7 @@ public class UserServiceImpl implements UserService{
         return "please check your mail!";
     }
 
+
     @Override
     public String generateToken(String idUser) {
         return jwtTokenProvider.generateEmailVerificationToken(idUser);
@@ -188,5 +188,26 @@ public class UserServiceImpl implements UserService{
         }
     }
 
+    @Override
+    public UserDto getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null) {
+            Object principal = authentication.getPrincipal();
+
+            if (principal instanceof User) {
+                return UserMapper.mapper.toDto((User) principal);
+            }
+        }
+        return null;
+
+    }
+
+    public String getCurrentUsername() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated()) {
+            return authentication.getName(); // Le nom de l'utilisateur (login)
+        }
+        return null;
+    }
 
 }

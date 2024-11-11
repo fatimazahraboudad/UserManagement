@@ -39,11 +39,13 @@ public class UserDto {
     private String address;
 
     private boolean enabled;
-    private boolean emailVerified;
-
 
     @ValidPassword
     private String password;
+
+    private boolean emailVerified;
+
+
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 

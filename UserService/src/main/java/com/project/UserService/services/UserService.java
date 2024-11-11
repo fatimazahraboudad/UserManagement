@@ -29,4 +29,6 @@ public interface UserService {
 
     String verifyEmailWithSendingEmail(String idUser);
 
+    UserDto getCurrentUser();
+
 }
