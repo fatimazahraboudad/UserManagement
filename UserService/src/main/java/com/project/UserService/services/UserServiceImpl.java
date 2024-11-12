@@ -4,10 +4,7 @@ import com.project.UserService.dtos.JwtAuthenticationResponse;
 import com.project.UserService.dtos.SignInRequest;
 import com.project.UserService.dtos.UserDto;
 import com.project.UserService.entities.User;
-import com.project.UserService.exceptions.AlreadyExistException;
-import com.project.UserService.exceptions.InvalidEmailOrPasswordException;
-import com.project.UserService.exceptions.TokenExpiredException;
-import com.project.UserService.exceptions.UserNotFoundException;
+import com.project.UserService.exceptions.*;
 import com.project.UserService.mappers.UserMapper;
 import com.project.UserService.repositories.UserRepository;
 import com.project.UserService.security.JwtTokenProvider;
@@ -57,7 +54,16 @@ public class UserServiceImpl implements UserService{
         user.setEnabled(false);
         user.setEmailVerified(false);
         user.setPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
-        return UserMapper.mapper.toDto(userRepository.save(user));
+        User savedUser = userRepository.save(user);
+
+        if (savedUser != null && savedUser.getIdUser() != null) {
+            String message = verifyEmailWithSendingEmail(savedUser.getIdUser());
+            System.out.println(message);
+        } else {
+            throw new RuntimeException("Failed ");
+        }
+
+        return UserMapper.mapper.toDto(savedUser);
     }
 
     @Override
@@ -80,6 +86,7 @@ public class UserServiceImpl implements UserService{
         user.setAddress(userDto.getAddress());
         user.setPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
         user.setUpdatedAt(LocalDateTime.now());
+
         return UserMapper.mapper.toDto(userRepository.save(user));
     }
 
@@ -99,6 +106,11 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public JwtAuthenticationResponse signIn(SignInRequest request)  {
+
+        if(!userRepository.findByEmailIgnoreCase(request.getEmail()).get().isEmailVerified()){
+            throw new EmailNotVerifiedException();
+        }
+
         // Authenticate using email and password
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -150,6 +162,7 @@ public class UserServiceImpl implements UserService{
         }
     }
 
+
     @Override
     public String verifyEmailWithSendingEmail(String idUser) {
         String token = generateToken(idUser);
@@ -182,7 +195,9 @@ public class UserServiceImpl implements UserService{
             return "Email verified";
 
         } catch (ExpiredJwtException e) {
+            verifyEmailWithSendingEmail(e.getClaims().getSubject());
             throw new TokenExpiredException();
+
         } catch (Exception e) {
             return "An error occurred during email verification.";
         }
@@ -209,5 +224,7 @@ public class UserServiceImpl implements UserService{
         }
         return null;
     }
+
+
 
 }

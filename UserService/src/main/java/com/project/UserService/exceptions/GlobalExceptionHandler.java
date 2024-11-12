@@ -32,6 +32,11 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(EmailNotVerifiedException.class)
+    public ResponseEntity<String> handleEmailNotVerifiedException(EmailNotVerifiedException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
         Map<String, String> errors = new HashMap<>();
