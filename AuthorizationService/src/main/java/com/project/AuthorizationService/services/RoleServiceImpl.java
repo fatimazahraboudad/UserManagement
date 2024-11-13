@@ -3,6 +3,7 @@ package com.project.AuthorizationService.services;
 
 import com.project.AuthorizationService.dtos.RoleDto;
 import com.project.AuthorizationService.entities.Role;
+import com.project.AuthorizationService.exceptions.RoleAlreadyExist;
 import com.project.AuthorizationService.exceptions.RoleNotFoundException;
 import com.project.AuthorizationService.mappers.RoleMapper;
 import com.project.AuthorizationService.repositories.RoleRepository;
@@ -22,6 +23,9 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public RoleDto addRole(RoleDto roleDto) {
+        if(roleRepository.findByName(roleDto.getName()).isPresent()) {
+            throw new RoleAlreadyExist(roleDto.getName());
+        }
         Role role= RoleMapper.mapper.toEntity(roleDto);
         role.setIdRole(UUID.randomUUID().toString());
         return RoleMapper.mapper.toDto(roleRepository.save(role));
@@ -48,6 +52,12 @@ public class RoleServiceImpl implements RoleService {
     public String deleteRole(String idRole) {
         roleRepository.deleteById(idRole);
         return "role deleted successfully";
+    }
+
+    @Override
+    public RoleDto getRoleByName(String name) {
+        Role role = roleRepository.findByName(name).orElseThrow(RoleNotFoundException::new);
+        return RoleMapper.mapper.toDto(role);
     }
 
     Role helper(String idRole) {

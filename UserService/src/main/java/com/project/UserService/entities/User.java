@@ -1,15 +1,20 @@
 package com.project.UserService.entities;
 
+import com.project.UserService.dtos.RoleDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Setter
 @Getter
@@ -48,9 +53,16 @@ public class User implements UserDetails {
     }
 
 
+    @ElementCollection(fetch = FetchType.EAGER)
+    @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "idUser"))
+    @Column(name = "role", nullable = false)
+    private Set<String> role=new HashSet<>();
+
+
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        return role.stream().map(t -> new SimpleGrantedAuthority(t.toString())).collect(Collectors.toList());
     }
 
     @Override

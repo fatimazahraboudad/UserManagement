@@ -1,8 +1,10 @@
 package com.project.UserService.controllers;
 
 import com.project.UserService.dtos.JwtAuthenticationResponse;
+import com.project.UserService.dtos.RoleDto;
 import com.project.UserService.dtos.SignInRequest;
 import com.project.UserService.dtos.UserDto;
+import com.project.UserService.feignClient.RoleFeignClient;
 import com.project.UserService.services.EmailService;
 import com.project.UserService.services.UserService;
 import io.jsonwebtoken.Jwts;
@@ -82,6 +84,15 @@ public class UserController {
     @GetMapping("/users/me")
     public ResponseEntity<UserDto> currentUser() {
         return new ResponseEntity<>(userService.getCurrentUser(), HttpStatus.OK);
+    }
+
+    @GetMapping("/{idUser}/{name}")
+    public UserDto addAuthority(@PathVariable String idUser,@PathVariable String name) {
+        return userService.addAuthority(idUser,name);
+    }
+    @GetMapping("remove/{idUser}/{name}")
+    public UserDto removeAuthority(@PathVariable String idUser,@PathVariable String name) {
+        return userService.removeAuthority(idUser,name);
     }
 
 

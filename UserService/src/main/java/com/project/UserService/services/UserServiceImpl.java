@@ -1,10 +1,12 @@
 package com.project.UserService.services;
 
 import com.project.UserService.dtos.JwtAuthenticationResponse;
+import com.project.UserService.dtos.RoleDto;
 import com.project.UserService.dtos.SignInRequest;
 import com.project.UserService.dtos.UserDto;
 import com.project.UserService.entities.User;
 import com.project.UserService.exceptions.*;
+import com.project.UserService.feignClient.RoleFeignClient;
 import com.project.UserService.mappers.UserMapper;
 import com.project.UserService.repositories.UserRepository;
 import com.project.UserService.security.JwtTokenProvider;
@@ -44,6 +46,8 @@ public class UserServiceImpl implements UserService{
     private final AuthenticationManager authenticationManager;
 
     private final EmailService emailService;
+    private final RoleFeignClient roleFeignClient;
+
     @Override
     public UserDto addUser(UserDto userDto) {
         if(userRepository.findByEmailIgnoreCase(userDto.getEmail()).isPresent()){
@@ -54,13 +58,18 @@ public class UserServiceImpl implements UserService{
         user.setEnabled(false);
         user.setEmailVerified(false);
         user.setPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
+
+
+        RoleDto roleDto = roleFeignClient.getRoleByName("MANSA-GUEST-GR").getBody();
+        if(roleDto != null) user.getRole().add(roleDto.getName());
+
         User savedUser = userRepository.save(user);
 
         if (savedUser != null && savedUser.getIdUser() != null) {
             String message = verifyEmailWithSendingEmail(savedUser.getIdUser());
             System.out.println(message);
         } else {
-            throw new RuntimeException("Failed ");
+            throw new SomethingWrongException();
         }
 
         return UserMapper.mapper.toDto(savedUser);
@@ -217,14 +226,34 @@ public class UserServiceImpl implements UserService{
 
     }
 
-    public String getCurrentUsername() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.isAuthenticated()) {
-            return authentication.getName(); // Le nom de l'utilisateur (login)
+
+
+    @Override
+    public UserDto addAuthority(String idUser, String role) {
+        User user=helper(idUser);
+        RoleDto roleDto = roleFeignClient.getRoleByName(role).getBody();
+        if(roleDto != null) {
+            if (user.getRole().contains(role)) {
+                throw new RolesException(idUser, role);
+            }
+          user.getRole().add(role);
+
         }
-        return null;
+
+        return UserMapper.mapper.toDto(userRepository.save(user));
     }
 
+
+
+    @Override
+    public UserDto removeAuthority(String idUser, String role) {
+        User user=helper(idUser);
+        RoleDto roleDto = roleFeignClient.getRoleByName(role).getBody();
+        if(roleDto != null) {
+            user.getRole().remove(role);
+        }
+        return UserMapper.mapper.toDto(userRepository.save(user));
+    }
 
 
 }

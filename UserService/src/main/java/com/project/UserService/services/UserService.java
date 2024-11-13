@@ -1,6 +1,7 @@
 package com.project.UserService.services;
 
 import com.project.UserService.dtos.JwtAuthenticationResponse;
+import com.project.UserService.dtos.RoleDto;
 import com.project.UserService.dtos.SignInRequest;
 import com.project.UserService.dtos.UserDto;
 import jakarta.servlet.http.HttpServletRequest;
@@ -30,5 +31,10 @@ public interface UserService {
     String verifyEmailWithSendingEmail(String idUser);
 
     UserDto getCurrentUser();
+
+
+
+    UserDto addAuthority(String idUser, String role);
+    UserDto removeAuthority(String idUser, String role);
 
 }

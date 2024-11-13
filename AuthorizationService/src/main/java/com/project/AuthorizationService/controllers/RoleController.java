@@ -42,4 +42,9 @@ public class RoleController {
         return new ResponseEntity<>(roleService.deleteRole(idRole), HttpStatus.OK);
     }
 
+    @GetMapping("get/{name}")
+    public ResponseEntity<RoleDto> getRoleByName(@PathVariable String name) {
+        return new ResponseEntity<>(roleService.getRoleByName(name), HttpStatus.OK);
+    }
+
 }

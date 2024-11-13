@@ -11,7 +11,10 @@ public enum ExceptionMessages {
     USER_ALREADY_EXIST("User already exists with mail %s."),
     EMAIL_OR_PASSWORD_INVALID("email pr password invalid."),
     TOKEN_EXPIRED("Token expired, verification invalid."),
-    EMAIL_NOT_VERIFIED("Login failed!, please verify your mail first");
+    EMAIL_NOT_VERIFIED("Login failed!, please verify your mail first"),
+    OUPS_SOMETHING_WRONG("Oups something wrong!"),
+    USER_ALREADY_HAVE_ROLE("user with id %s already have %s role");
+
 
     private final String message;
 
