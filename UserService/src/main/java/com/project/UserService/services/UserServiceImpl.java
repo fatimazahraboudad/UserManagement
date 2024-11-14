@@ -231,15 +231,13 @@ public class UserServiceImpl implements UserService{
     @Override
     public UserDto addAuthority(String idUser, String role) {
         User user=helper(idUser);
-        RoleDto roleDto = roleFeignClient.getRoleByName(role).getBody();
-        if(roleDto != null) {
+        //RoleDto roleDto = roleFeignClient.getRoleByName(role).getBody();
+        if(role != null) {
             if (user.getRole().contains(role)) {
                 throw new RolesException(idUser, role);
             }
           user.getRole().add(role);
-
         }
-
         return UserMapper.mapper.toDto(userRepository.save(user));
     }
 
@@ -248,10 +246,10 @@ public class UserServiceImpl implements UserService{
     @Override
     public UserDto removeAuthority(String idUser, String role) {
         User user=helper(idUser);
-        RoleDto roleDto = roleFeignClient.getRoleByName(role).getBody();
-        if(roleDto != null) {
+        //RoleDto roleDto = roleFeignClient.getRoleByName(role).getBody();
+        if(role != null) {
             user.getRole().remove(role);
-        }
+         }
         return UserMapper.mapper.toDto(userRepository.save(user));
     }
 

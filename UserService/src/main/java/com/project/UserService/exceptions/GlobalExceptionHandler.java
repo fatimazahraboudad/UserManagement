@@ -1,5 +1,7 @@
 package com.project.UserService.exceptions;
 
+import com.project.UserService.dtos.ErrorResponse;
+import feign.FeignException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -39,12 +41,19 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(SomethingWrongException.class)
     public ResponseEntity<String> handleSomethingWrong(SomethingWrongException ex) {
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.SERVICE_UNAVAILABLE);
     }
 
     @ExceptionHandler(RolesException.class)
     public ResponseEntity<String> handleRolesException(RolesException ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(FeignException.class)
+    public ResponseEntity<String> handleFeignException(FeignException ex) {
+        String errorMessage = ex.contentUTF8();
+        HttpStatus status = HttpStatus.valueOf(ex.status());
+        return new ResponseEntity<>(errorMessage, status);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

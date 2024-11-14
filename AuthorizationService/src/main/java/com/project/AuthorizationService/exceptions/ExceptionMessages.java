@@ -9,7 +9,9 @@ public enum ExceptionMessages {
 
     ROLE_NOT_FOUND("Role with id %s not found."),
     ROLE_NOT_FOUND_WITH_NAME("Role not found."),
-    ROLE_ALREADY_EXIST("Role with name %s already exist.");
+    ROLE_ALREADY_EXIST("Role with name %s already exist."),
+    OUPS_SOMETHING_WRONG("Oups something wrong!");
+            ;
 
     private final String message;
 

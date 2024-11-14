@@ -18,7 +18,10 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         types.print.banner: false
         format_sql: true
-
+  cloud:
+    openfeign:
+      circuitbreaker:
+        enabled: true
 eureka:
   client:
     serviceUrl:

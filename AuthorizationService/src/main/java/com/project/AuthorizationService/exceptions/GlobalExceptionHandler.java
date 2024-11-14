@@ -1,5 +1,6 @@
 package com.project.AuthorizationService.exceptions;
 
+import feign.FeignException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -23,7 +24,17 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(FeignException.class)
+    public ResponseEntity<String> handleFeignException(FeignException ex) {
+        String errorMessage = ex.contentUTF8();
+        HttpStatus status = HttpStatus.valueOf(ex.status());
+        return new ResponseEntity<>(errorMessage, status);
+    }
 
+    @ExceptionHandler(SomethingWrongException.class)
+    public ResponseEntity<String> handleSomethingWrong(SomethingWrongException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.SERVICE_UNAVAILABLE);
+    }
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
         Map<String, String> errors = new HashMap<>();

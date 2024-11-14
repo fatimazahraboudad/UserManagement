@@ -86,13 +86,13 @@ public class UserController {
         return new ResponseEntity<>(userService.getCurrentUser(), HttpStatus.OK);
     }
 
-    @GetMapping("/{idUser}/{name}")
-    public UserDto addAuthority(@PathVariable String idUser,@PathVariable String name) {
-        return userService.addAuthority(idUser,name);
+    @GetMapping("/admin/{idUser}/{name}")
+    public ResponseEntity<UserDto> addAuthority(@PathVariable String idUser,@PathVariable String name) {
+        return new ResponseEntity<>(userService.addAuthority(idUser,name), HttpStatus.OK);
     }
-    @GetMapping("remove/{idUser}/{name}")
-    public UserDto removeAuthority(@PathVariable String idUser,@PathVariable String name) {
-        return userService.removeAuthority(idUser,name);
+    @GetMapping("/admin/remove/{idUser}/{name}")
+    public ResponseEntity<UserDto> removeAuthority(@PathVariable String idUser,@PathVariable String name) {
+        return new ResponseEntity<>(userService.removeAuthority(idUser,name), HttpStatus.OK);
     }
 
 

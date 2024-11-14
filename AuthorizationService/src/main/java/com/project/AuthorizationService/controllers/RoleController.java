@@ -1,6 +1,7 @@
 package com.project.AuthorizationService.controllers;
 
 import com.project.AuthorizationService.dtos.RoleDto;
+import com.project.AuthorizationService.dtos.UserDto;
 import com.project.AuthorizationService.services.RoleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -45,6 +46,16 @@ public class RoleController {
     @GetMapping("get/{name}")
     public ResponseEntity<RoleDto> getRoleByName(@PathVariable String name) {
         return new ResponseEntity<>(roleService.getRoleByName(name), HttpStatus.OK);
+    }
+
+    @GetMapping("addAuthority/{idUser}/{name}")
+    public ResponseEntity<UserDto> addAuthority(@PathVariable String idUser,@PathVariable String name) {
+        return new ResponseEntity<>(roleService.addAuthority(idUser,name), HttpStatus.OK);
+    }
+
+    @GetMapping("removeAuthority/{idUser}/{name}")
+    public ResponseEntity<UserDto> removeAuthority(@PathVariable String idUser,@PathVariable String name) {
+        return new ResponseEntity<>(roleService.removeAuthority(idUser,name), HttpStatus.OK);
     }
 
 }
