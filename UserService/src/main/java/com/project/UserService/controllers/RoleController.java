@@ -1,25 +1,24 @@
-package com.project.AuthorizationService.controllers;
+package com.project.UserService.controllers;
 
-import com.project.AuthorizationService.dtos.RoleDto;
-import com.project.AuthorizationService.dtos.UserDto;
-import com.project.AuthorizationService.services.RoleService;
+
+import com.project.UserService.dtos.RoleDto;
+import com.project.UserService.services.RoleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/authorization")
+@RequestMapping("/role")
 @RequiredArgsConstructor
 public class RoleController {
 
     private final RoleService roleService;
 
     @PostMapping("/add")
-    public ResponseEntity<RoleDto> addNewRole( @RequestBody RoleDto roleDto) {
+    public ResponseEntity<RoleDto> addNewRole(@RequestBody RoleDto roleDto) {
         return new ResponseEntity<>(roleService.addRole(roleDto), HttpStatus.CREATED);
     }
 
@@ -48,14 +47,6 @@ public class RoleController {
         return new ResponseEntity<>(roleService.getRoleByName(name), HttpStatus.OK);
     }
 
-    @GetMapping("addAuthority/{idUser}/{name}")
-    public ResponseEntity<UserDto> addAuthority(@PathVariable String idUser,@PathVariable String name) {
-        return new ResponseEntity<>(roleService.addAuthority(idUser,name), HttpStatus.OK);
-    }
 
-    @GetMapping("removeAuthority/{idUser}/{name}")
-    public ResponseEntity<UserDto> removeAuthority(@PathVariable String idUser,@PathVariable String name) {
-        return new ResponseEntity<>(roleService.removeAuthority(idUser,name), HttpStatus.OK);
-    }
 
 }

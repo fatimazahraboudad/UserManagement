@@ -50,6 +50,6 @@ public class UserDto {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    private Set<String> role;
+    private Set<RoleDto> role;
 
 }

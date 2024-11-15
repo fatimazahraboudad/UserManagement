@@ -1,7 +1,5 @@
 package com.project.UserService.exceptions;
 
-import com.project.UserService.dtos.ErrorResponse;
-import feign.FeignException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -49,11 +47,21 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(FeignException.class)
-    public ResponseEntity<String> handleFeignException(FeignException ex) {
-        String errorMessage = ex.contentUTF8();
-        HttpStatus status = HttpStatus.valueOf(ex.status());
-        return new ResponseEntity<>(errorMessage, status);
+//    @ExceptionHandler(FeignException.class)
+//    public ResponseEntity<String> handleFeignException(FeignException ex) {
+//        String errorMessage = ex.contentUTF8();
+//        HttpStatus status = HttpStatus.valueOf(ex.status());
+//        return new ResponseEntity<>(errorMessage, status);
+//    }
+
+    @ExceptionHandler(RoleNotFoundException.class)
+    public ResponseEntity<String> handleRoleNotFound(RoleNotFoundException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(RoleAlreadyExist.class)
+    public ResponseEntity<String> handleRoleAlreadyExist(RoleAlreadyExist ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

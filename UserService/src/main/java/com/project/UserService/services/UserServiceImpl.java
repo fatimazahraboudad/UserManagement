@@ -4,9 +4,10 @@ import com.project.UserService.dtos.JwtAuthenticationResponse;
 import com.project.UserService.dtos.RoleDto;
 import com.project.UserService.dtos.SignInRequest;
 import com.project.UserService.dtos.UserDto;
+import com.project.UserService.entities.Role;
 import com.project.UserService.entities.User;
 import com.project.UserService.exceptions.*;
-import com.project.UserService.feignClient.RoleFeignClient;
+import com.project.UserService.mappers.RoleMapper;
 import com.project.UserService.mappers.UserMapper;
 import com.project.UserService.repositories.UserRepository;
 import com.project.UserService.security.JwtTokenProvider;
@@ -28,6 +29,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 
@@ -46,22 +48,25 @@ public class UserServiceImpl implements UserService{
     private final AuthenticationManager authenticationManager;
 
     private final EmailService emailService;
-    private final RoleFeignClient roleFeignClient;
+    private final RoleService roleService;
+    private final UserMapper userMapper;
+    private final RoleMapper roleMapper;
 
     @Override
     public UserDto addUser(UserDto userDto) {
         if(userRepository.findByEmailIgnoreCase(userDto.getEmail()).isPresent()){
             throw new AlreadyExistException( userDto.getEmail());
         }
-        User user = UserMapper.mapper.toEntity(userDto);
+        User user = userMapper.toEntity(userDto);
         user.setIdUser(UUID.randomUUID().toString());
         user.setEnabled(false);
         user.setEmailVerified(false);
         user.setPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
+        if (user.getRole() == null) {
+            user.setRole(new HashSet<>());
+        }
 
-
-        RoleDto roleDto = roleFeignClient.getRoleByName("MANSA-GUEST-GR").getBody();
-        if(roleDto != null) user.getRole().add(roleDto.getName());
+        user.getRole().add(roleMapper.toEntity(roleService.getRoleByName("MANSA-GUEST-GR")));
 
         User savedUser = userRepository.save(user);
 
@@ -72,17 +77,17 @@ public class UserServiceImpl implements UserService{
             throw new SomethingWrongException();
         }
 
-        return UserMapper.mapper.toDto(savedUser);
+        return userMapper.toDto(savedUser);
     }
 
     @Override
     public List<UserDto> getAllUsers() {
-        return UserMapper.mapper.toDtos(userRepository.findAll());
+        return userMapper.toDtos(userRepository.findAll());
     }
 
     @Override
     public UserDto getUserById(String idUser) {
-        return UserMapper.mapper.toDto(helper(idUser));
+        return userMapper.toDto(helper(idUser));
     }
 
     @Override
@@ -96,14 +101,14 @@ public class UserServiceImpl implements UserService{
         user.setPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
         user.setUpdatedAt(LocalDateTime.now());
 
-        return UserMapper.mapper.toDto(userRepository.save(user));
+        return userMapper.toDto(userRepository.save(user));
     }
 
     @Override
     public UserDto updateStatus(String idUser) {
         User user = helper(idUser);
         user.setEnabled(!user.isEnabled());
-        return UserMapper.mapper.toDto(userRepository.save(user));
+        return userMapper.toDto(userRepository.save(user));
     }
 
     public User helper(String idUser) {
@@ -144,12 +149,12 @@ public class UserServiceImpl implements UserService{
         log.info("User return object: {}",JwtAuthenticationResponse.builder()
                 .accessToken(jwt)
                 .refreshToken(refreshToken)
-                .users(UserMapper.mapper.toDto(user))
+                .users(userMapper.toDto(user))
                 .build());
         return JwtAuthenticationResponse.builder()
                 .accessToken(jwt)
                 .refreshToken(refreshToken)
-                .users(UserMapper.mapper.toDto(user))
+                .users(userMapper.toDto(user))
                 .build();
     }
 
@@ -219,7 +224,7 @@ public class UserServiceImpl implements UserService{
             Object principal = authentication.getPrincipal();
 
             if (principal instanceof User) {
-                return UserMapper.mapper.toDto((User) principal);
+                return userMapper.toDto((User) principal);
             }
         }
         return null;
@@ -231,14 +236,17 @@ public class UserServiceImpl implements UserService{
     @Override
     public UserDto addAuthority(String idUser, String role) {
         User user=helper(idUser);
-        //RoleDto roleDto = roleFeignClient.getRoleByName(role).getBody();
+        Role addRole=roleMapper.toEntity(roleService.getRoleByName(role));
         if(role != null) {
-            if (user.getRole().contains(role)) {
+            if(user.getRole()
+                    .stream()
+                    .anyMatch(
+                        role1 -> role1.getIdRole().equals(addRole.getIdRole()))) {
                 throw new RolesException(idUser, role);
             }
-          user.getRole().add(role);
+          user.getRole().add(addRole);
         }
-        return UserMapper.mapper.toDto(userRepository.save(user));
+        return userMapper.toDto(userRepository.save(user));
     }
 
 
@@ -246,11 +254,11 @@ public class UserServiceImpl implements UserService{
     @Override
     public UserDto removeAuthority(String idUser, String role) {
         User user=helper(idUser);
-        //RoleDto roleDto = roleFeignClient.getRoleByName(role).getBody();
-        if(role != null) {
-            user.getRole().remove(role);
+        Role roleToRemove= roleMapper.toEntity(roleService.getRoleByName(role));
+        if(roleToRemove != null) {
+            user.getRole().removeIf(role1 -> role1.getIdRole().equals(roleToRemove.getIdRole()));
          }
-        return UserMapper.mapper.toDto(userRepository.save(user));
+        return userMapper.toDto(userRepository.save(user));
     }
 
 

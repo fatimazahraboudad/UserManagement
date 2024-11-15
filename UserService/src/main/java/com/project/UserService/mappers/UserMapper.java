@@ -7,10 +7,9 @@ import org.mapstruct.factory.Mappers;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring",  uses = RoleMapper.class)
 public interface UserMapper {
 
-    UserMapper mapper = Mappers.getMapper(UserMapper.class);
 
     User toEntity(UserDto userDto);
 

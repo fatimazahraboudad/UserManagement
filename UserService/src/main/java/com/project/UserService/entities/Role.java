@@ -1,4 +1,4 @@
-package com.project.AuthorizationService.entities;
+package com.project.UserService.entities;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;

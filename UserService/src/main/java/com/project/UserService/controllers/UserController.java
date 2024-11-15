@@ -4,7 +4,6 @@ import com.project.UserService.dtos.JwtAuthenticationResponse;
 import com.project.UserService.dtos.RoleDto;
 import com.project.UserService.dtos.SignInRequest;
 import com.project.UserService.dtos.UserDto;
-import com.project.UserService.feignClient.RoleFeignClient;
 import com.project.UserService.services.EmailService;
 import com.project.UserService.services.UserService;
 import io.jsonwebtoken.Jwts;

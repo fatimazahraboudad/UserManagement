@@ -13,7 +13,10 @@ public enum ExceptionMessages {
     TOKEN_EXPIRED("Token expired, verification invalid."),
     EMAIL_NOT_VERIFIED("Login failed!, please verify your mail first"),
     OUPS_SOMETHING_WRONG("Oups something wrong!"),
-    USER_ALREADY_HAVE_ROLE("user with id %s already have %s role");
+    USER_ALREADY_HAVE_ROLE("user with id %s already have %s role"),
+    ROLE_NOT_FOUND("Role with id %s not found."),
+    ROLE_NOT_FOUND_WITH_NAME("Role not found."),
+    ROLE_ALREADY_EXIST("Role with name %s already exist.");
 
 
     private final String message;

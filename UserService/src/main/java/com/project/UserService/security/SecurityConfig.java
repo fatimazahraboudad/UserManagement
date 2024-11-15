@@ -41,7 +41,8 @@ public class SecurityConfig {
             "/users/logout",
             "/users/register",
             "/users/login",
-            "/users/verify/**"
+            "/users/verify/**",
+            "/role/**"
     };
 
     private final UserRepository userRepository;

@@ -1,4 +1,4 @@
-package com.project.AuthorizationService.exceptions;
+package com.project.UserService.exceptions;
 
 public class RoleAlreadyExist extends RuntimeException{
     public RoleAlreadyExist(String name) {

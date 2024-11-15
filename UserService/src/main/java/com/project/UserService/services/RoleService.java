@@ -1,7 +1,6 @@
-package com.project.AuthorizationService.services;
+package com.project.UserService.services;
 
-import com.project.AuthorizationService.dtos.RoleDto;
-import com.project.AuthorizationService.dtos.UserDto;
+import com.project.UserService.dtos.RoleDto;
 
 import java.util.List;
 
@@ -19,7 +18,5 @@ public interface RoleService {
 
     RoleDto getRoleByName(String name);
 
-    UserDto addAuthority(String idUser, String role);
-    UserDto removeAuthority(String idUser, String role);
 
 }

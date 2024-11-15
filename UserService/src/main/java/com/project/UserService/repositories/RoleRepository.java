@@ -1,6 +1,6 @@
-package com.project.AuthorizationService.repositories;
+package com.project.UserService.repositories;
 
-import com.project.AuthorizationService.entities.Role;
+import com.project.UserService.entities.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

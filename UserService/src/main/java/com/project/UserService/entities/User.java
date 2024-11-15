@@ -53,10 +53,13 @@ public class User implements UserDetails {
     }
 
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "idUser"))
-    @Column(name = "role", nullable = false)
-    private Set<String> role=new HashSet<>();
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "user_role",
+            joinColumns = @JoinColumn(name = "idUser"),
+            inverseJoinColumns = @JoinColumn(name = "idRole")
+    )
+    private Set<Role> role = new HashSet<>();
 
 
 
