@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,21 +33,25 @@ public class UserController {
         return new ResponseEntity<>(userService.addUser(userDto), HttpStatus.CREATED);
     }
 
+    @PreAuthorize("hasRole('MANSA-ADMIN-GR')")
     @GetMapping("/admin/users")
     public ResponseEntity<List<UserDto>> getAllUsers() {
         return new ResponseEntity<>(userService.getAllUsers(), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('MANSA-GUEST-GR')")
     @GetMapping("/users/me/{idUser}")
     public ResponseEntity<UserDto> getUserById(@PathVariable String idUser) {
         return new ResponseEntity<>(userService.getUserById(idUser), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('MANSA-GUEST-GR')")
     @PutMapping("/users/me")
     public ResponseEntity<UserDto> UpdateProfile(@Validated @RequestBody UserDto userDto) {
         return new ResponseEntity<>(userService.updateUser(userDto), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('MANSA-ADMIN-GR')")
     @PutMapping("/admin/users/{idUser}/status")
     public ResponseEntity<UserDto> UpdateStatus(@PathVariable String idUser)  {
         return new ResponseEntity<>(userService.updateStatus(idUser), HttpStatus.OK);
@@ -80,15 +85,19 @@ public class UserController {
     }
 
 
+    @PreAuthorize("hasRole('MANSA-GUEST-GR')")
     @GetMapping("/users/me")
     public ResponseEntity<UserDto> currentUser() {
         return new ResponseEntity<>(userService.getCurrentUser(), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('MANSA-ADMIN-GR')")
     @GetMapping("/admin/{idUser}/{name}")
     public ResponseEntity<UserDto> addAuthority(@PathVariable String idUser,@PathVariable String name) {
         return new ResponseEntity<>(userService.addAuthority(idUser,name), HttpStatus.OK);
     }
+
+    @PreAuthorize("hasRole('MANSA-ADMIN-GR')")
     @GetMapping("/admin/remove/{idUser}/{name}")
     public ResponseEntity<UserDto> removeAuthority(@PathVariable String idUser,@PathVariable String name) {
         return new ResponseEntity<>(userService.removeAuthority(idUser,name), HttpStatus.OK);

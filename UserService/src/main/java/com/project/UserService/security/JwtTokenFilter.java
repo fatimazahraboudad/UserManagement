@@ -1,5 +1,7 @@
 package com.project.UserService.security;
 
+import com.project.UserService.exceptions.TokenExpiredException;
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -30,25 +32,39 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         String token = null;
         String userEmail = null;
 
-        if (authHeader != null && authHeader.startsWith("Bearer ")){
-            token = authHeader.substring(7);
-            userEmail = jwtTokenProvider.extractUsername(token);
+        try {
+            if (authHeader != null && authHeader.startsWith("Bearer ")) {
+                token = authHeader.substring(7);
+                userEmail = jwtTokenProvider.extractUsername(token);
+            }
+
+            if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                log.info("Processing authentication for user: " + userEmail);
+                UserDetails userDetails = userDetailsService.loadUserByUsername(userEmail);
+
+                if (Boolean.TRUE.equals(jwtTokenProvider.isTokenValid(token, userDetails))) {
+                    UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+                            userDetails,
+                            null,
+                            userDetails.getAuthorities()
+                    );
+                    authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+                }
+            }
+        } catch (ExpiredJwtException ex) {
+            log.warn("JWT Token has expired: {}", ex.getMessage());
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("Token is expired and not valid anymore.");
+           // throw new TokenExpiredException();
+            return;
+        } catch (Exception ex) {
+            log.error("An error occurred while processing the JWT Token", ex);
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("Invalid token.");
+            return;
         }
 
-        if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null){
-            log.info("userEmail userEmail" + userEmail);
-            UserDetails userDetails = userDetailsService.loadUserByUsername(userEmail);
-            if (Boolean.TRUE.equals(jwtTokenProvider.isTokenValid(token,userDetails))){
-                UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                        userDetails,
-                        null,
-                        userDetails.getAuthorities()
-                );
-                authenticationToken.setDetails(
-                        new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-            }
-        }
-        filterChain.doFilter(request,response);
+        filterChain.doFilter(request, response);
     }
 }

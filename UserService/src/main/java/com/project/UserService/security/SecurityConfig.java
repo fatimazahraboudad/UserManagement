@@ -1,6 +1,7 @@
 package com.project.UserService.security;
 
 import com.project.UserService.repositories.UserRepository;
+import com.project.UserService.utils.Varibales;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
@@ -41,8 +42,7 @@ public class SecurityConfig {
             "/users/logout",
             "/users/register",
             "/users/login",
-            "/users/verify/**",
-            "/role/**"
+            "/users/verify/**"
     };
 
     private final UserRepository userRepository;
@@ -71,7 +71,8 @@ public class SecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(ex -> ex.
                         requestMatchers(WHITE_LIST_URL).permitAll()
-                        //.requestMatchers(HttpMethod.GET, "/test").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/role/**").hasAnyRole(Varibales.ROLE_ADMIN)
+                        .requestMatchers( "/role/**").hasRole(Varibales.ROLE_ADMIN)
                         .anyRequest().authenticated())
                 .exceptionHandling(httpSecurityExceptionHandlingConfigurer ->
                         httpSecurityExceptionHandlingConfigurer
