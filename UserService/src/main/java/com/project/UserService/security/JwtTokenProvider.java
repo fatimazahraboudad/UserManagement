@@ -67,16 +67,11 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-//    public String generateAccessToken(User user) {
-//        Map<String, Object> claims = new HashMap<>();
-//        claims.put("role", user.getRole());
-//        return createToken(claims, user.getEmail(), jwtExpiration); // 20 minutes
-//    }
 
     public String generateAccessToken(User user) {
         Map<String, Object> claims = new HashMap<>();
         Set<String> roles = user.getRole().stream()
-                .map(Role::getName)  // Supposons que getRole() retourne le nom du rôle (par exemple "ADMIN")
+                .map(Role::getName)
                 .collect(Collectors.toSet());
         claims.put("role", roles);
         return createToken(claims, user.getEmail(), jwtExpiration);
@@ -84,7 +79,7 @@ public class JwtTokenProvider {
     public String generateRefreshToken(User user) {
         Map<String, Object> claims = new HashMap<>();
         Set<String> roles = user.getRole().stream()
-                .map(Role::getName)  // Supposons que getRole() retourne le nom du rôle (par exemple "ADMIN")
+                .map(Role::getName)
                 .collect(Collectors.toSet());
         claims.put("role", roles);
         return createToken(claims, user.getEmail(), refreshExpiration); // 1 hour

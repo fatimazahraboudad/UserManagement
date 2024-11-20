@@ -1,7 +1,5 @@
 server:
   port: 0
-  servlet:
-    context-path: /api
 
 spring:
   application:
@@ -28,3 +26,6 @@ eureka:
   client:
     serviceUrl:
       defaultZone: http://localhost:8761/eureka
+token:
+  public:
+    key: keys/publicKey.key

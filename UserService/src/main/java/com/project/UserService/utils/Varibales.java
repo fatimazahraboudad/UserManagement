@@ -1,5 +1,8 @@
 package com.project.UserService.utils;
 
+import org.springframework.stereotype.Component;
+
+@Component("R")
 public class Varibales {
 
     public static final String ROLE_ADMIN = "MANSA-ADMIN-GR";

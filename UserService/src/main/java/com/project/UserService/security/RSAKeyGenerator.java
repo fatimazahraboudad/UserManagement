@@ -14,7 +14,7 @@ public class RSAKeyGenerator {
         KeyPair keyPair = keyPairGenerator.generateKeyPair();
         PublicKey publicKey = keyPair.getPublic();
         PrivateKey privateKey = keyPair.getPrivate();
-        saveKeyToFile("UserService/src/main/resources/keys/publicKey.key", publicKey,"PUBLIC");
+        saveKeyToFile("keys/publicKey.key", publicKey,"PUBLIC");
         saveKeyToFile("UserService/src/main/resources/keys/privateKey.key", privateKey,"PRIVATE");
         System.out.println("Public Key (Base64):");
         System.out.println(Base64.getEncoder().encodeToString(publicKey.getEncoded()));

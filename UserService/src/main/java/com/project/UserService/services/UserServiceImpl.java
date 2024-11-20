@@ -11,6 +11,7 @@ import com.project.UserService.mappers.RoleMapper;
 import com.project.UserService.mappers.UserMapper;
 import com.project.UserService.repositories.UserRepository;
 import com.project.UserService.security.JwtTokenProvider;
+import com.project.UserService.utils.Varibales;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -66,7 +67,7 @@ public class UserServiceImpl implements UserService{
             user.setRole(new HashSet<>());
         }
 
-        user.getRole().add(roleMapper.toEntity(roleService.getRoleByName("MANSA-GUEST-GR")));
+        user.getRole().add(roleMapper.toEntity(roleService.getRoleByName(Varibales.ROLE_GUEST)));
 
         User savedUser = userRepository.save(user);
 

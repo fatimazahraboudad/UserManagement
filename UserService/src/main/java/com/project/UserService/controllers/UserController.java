@@ -33,7 +33,7 @@ public class UserController {
         return new ResponseEntity<>(userService.addUser(userDto), HttpStatus.CREATED);
     }
 
-    @PreAuthorize("hasRole('MANSA-ADMIN-GR')")
+    @PreAuthorize("hasRole(@R.ROLE_ADMIN)")
     @GetMapping("/admin/users")
     public ResponseEntity<List<UserDto>> getAllUsers() {
         return new ResponseEntity<>(userService.getAllUsers(), HttpStatus.OK);
