@@ -20,5 +20,6 @@ public class SubscriptionDto {
     private EsubscriptionStatus status;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private UserDto userDto;
 
 }

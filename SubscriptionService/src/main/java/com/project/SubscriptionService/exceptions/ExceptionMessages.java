@@ -7,7 +7,8 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum ExceptionMessages {
 
-    SUBSCRIPTION_NOT_FOUND("Subscription with id %s not found.");
+    SUBSCRIPTION_NOT_FOUND("Subscription with id %s not found."),
+    OUPS_SOMETHING_WRONG("Oups something wrong!");
 
 
     private final String message;

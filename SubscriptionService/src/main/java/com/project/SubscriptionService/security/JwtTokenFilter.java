@@ -43,24 +43,20 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
-            return; // Si pas de token, continuer sans traitement
+            return;
         }
 
-        String token = authHeader.substring(7); // Extraire le token après "Bearer "
+        String token = authHeader.substring(7);
         try {
-            // Charger la clé publique si elle n'est pas encore chargée
             if (publicKey == null) {
                 publicKey = jwtTokenProvider.loadPublicKey(publicKeyPath);
             }
 
-            // Extraire le nom d'utilisateur et vérifier la validité du token
             String userEmail = jwtTokenProvider.extractUsername(token, publicKey);
             if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 if (jwtTokenProvider.isTokenValidWithPublicKey(token, publicKey)) {
                     log.info("Token valide pour l'utilisateur : {}", userEmail);
 
-                    // Extraire les rôles
-                    //List<String> roles = jwtTokenProvider.extractRoles(token, publicKey);
 
                     // Convertir les rôles en autorités
                     Collection<? extends GrantedAuthority> authorities = jwtTokenProvider.extractRoles(token, publicKey).stream()

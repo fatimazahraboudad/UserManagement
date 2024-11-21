@@ -22,18 +22,13 @@ public class JwtTokenProvider {
 
     private RSAPublicKey publicKey;
 
-    // Charger la clé publique depuis un fichier
     public RSAPublicKey loadPublicKey(String filePath) throws Exception {
-        // Lire le contenu du fichier
         String key = new String(Files.readAllBytes(Paths.get(filePath)), StandardCharsets.UTF_8);
-        // Supprimer les en-têtes et les sauts de ligne
         key = key.replace("-----BEGIN PUBLIC KEY-----", "")
                 .replace("-----END PUBLIC KEY-----", "")
-                .replaceAll("\\s+", "")  // Supprime tous les espaces ou retours à la ligne
+                .replaceAll("\\s+", "")
                 .trim();
-        // Décoder la clé Base64
         byte[] decodedKey = Base64.getDecoder().decode(key);
-        // Construire la clé publique RSA
         KeyFactory keyFactory = KeyFactory.getInstance("RSA");
         return (RSAPublicKey) keyFactory.generatePublic(new X509EncodedKeySpec(decodedKey));
     }
@@ -45,13 +40,11 @@ public class JwtTokenProvider {
         return claims.get("role", List.class);
     }
 
-    // Extraire le nom d'utilisateur (sujet)
     public String extractUsername(String token, RSAPublicKey publicKey) {
         Claims claims = parseTokenClaims(token, publicKey);
-        return claims.getSubject(); // Par convention, le sujet est souvent l'email ou le nom d'utilisateur
+        return claims.getSubject();
     }
 
-    // Valider le token avec la clé publique
     public boolean isTokenValidWithPublicKey(String token, RSAPublicKey publicKey) {
         try {
             parseTokenClaims(token, publicKey);
