@@ -23,6 +23,21 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         types.print.banner: false
         format_sql: true
+  cloud:
+    stream:
+      bindings:
+        consumeNotif-in-0:
+          destination: notification-topic
+          group: notification-consumers # Ajout d'un groupe pour le consommateur
+
+      kafka:
+        binder:
+          brokers: localhost:9092
+#  thymeleaf:
+#    prefix: classpath:/templates/
+#    suffix: .html
+#    mode: HTML
+#    encoding: UTF-8
 
 eureka:
   client:

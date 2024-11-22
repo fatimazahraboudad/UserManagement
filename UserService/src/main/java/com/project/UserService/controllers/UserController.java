@@ -39,19 +39,19 @@ public class UserController {
         return new ResponseEntity<>(userService.getAllUsers(), HttpStatus.OK);
     }
 
-    @PreAuthorize("hasRole('MANSA-GUEST-GR')")
+    @PreAuthorize("hasRole(@R.ROLE_ADMIN)")
     @GetMapping("/users/me/{idUser}")
     public ResponseEntity<UserDto> getUserById(@PathVariable String idUser) {
         return new ResponseEntity<>(userService.getUserById(idUser), HttpStatus.OK);
     }
 
-    @PreAuthorize("hasRole('MANSA-GUEST-GR')")
+    @PreAuthorize("hasRole(@R.ROLE_GUEST) or hasRole(@R.ROLE_ADMIN) or hasRole(@R.ROLE_SUBSCRIBER)")
     @PutMapping("/users/me")
     public ResponseEntity<UserDto> UpdateProfile(@Validated @RequestBody UserDto userDto) {
         return new ResponseEntity<>(userService.updateUser(userDto), HttpStatus.OK);
     }
 
-    @PreAuthorize("hasRole('MANSA-ADMIN-GR')")
+    @PreAuthorize("hasRole(@R.ROLE_ADMIN)")
     @PutMapping("/admin/users/{idUser}/status")
     public ResponseEntity<UserDto> UpdateStatus(@PathVariable String idUser)  {
         return new ResponseEntity<>(userService.updateStatus(idUser), HttpStatus.OK);
@@ -85,19 +85,19 @@ public class UserController {
     }
 
 
-    @PreAuthorize("hasRole('MANSA-GUEST-GR')")
+    @PreAuthorize("hasRole(@R.ROLE_GUEST) or hasRole(@R.ROLE_ADMIN) or hasRole(@R.ROLE_SUBSCRIBER)")
     @GetMapping("/users/me")
     public ResponseEntity<UserDto> currentUser() {
         return new ResponseEntity<>(userService.getCurrentUser(), HttpStatus.OK);
     }
 
-    @PreAuthorize("hasRole('MANSA-ADMIN-GR')")
+    @PreAuthorize("hasRole(@R.ROLE_ADMIN)")
     @GetMapping("/admin/{idUser}/{name}")
     public ResponseEntity<UserDto> addAuthority(@PathVariable String idUser,@PathVariable String name) {
         return new ResponseEntity<>(userService.addAuthority(idUser,name), HttpStatus.OK);
     }
 
-    @PreAuthorize("hasRole('MANSA-ADMIN-GR')")
+    @PreAuthorize("hasRole(@R.ROLE_ADMIN)")
     @GetMapping("/admin/remove/{idUser}/{name}")
     public ResponseEntity<UserDto> removeAuthority(@PathVariable String idUser,@PathVariable String name) {
         return new ResponseEntity<>(userService.removeAuthority(idUser,name), HttpStatus.OK);

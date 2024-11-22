@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Subscription {{status}}</title>
+</head>
+<body>
+<h1 th:text="'Hello, ' + ${name} + '!'"></h1>
+<p>
+    <span th:if="${status == 'APPROVED'}">
+        Your subscription has been <strong>approved</strong>. Thank you for choosing our service!
+    </span>
+    <span th:if="${status == 'REJECTED'}">
+        We're sorry, your subscription has been <strong>rejected</strong>. If you have any questions, please contact our support team.
+    </span>
+</p>
+</body>
+</html>

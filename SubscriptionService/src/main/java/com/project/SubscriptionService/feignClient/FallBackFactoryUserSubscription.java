@@ -17,6 +17,18 @@ public class FallBackFactoryUserSubscription implements FallbackFactory<UserSubs
             public ResponseEntity<UserDto> getUserById(String idUser) {
                 throw new  SomethingWrongException();
             }
+
+            @Override
+            public ResponseEntity<UserDto> currentUser() {
+                throw new  SomethingWrongException();            }
+
+            @Override
+            public ResponseEntity<UserDto> addAuthority(String idUser, String name) {
+                throw new  SomethingWrongException();            }
+
+            @Override
+            public ResponseEntity<UserDto> removeAuthority(String idUser, String name) {
+                throw new  SomethingWrongException();            }
         };
     }
 }

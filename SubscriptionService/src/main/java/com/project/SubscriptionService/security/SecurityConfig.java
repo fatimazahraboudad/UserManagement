@@ -62,7 +62,7 @@ public class SecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(ex -> ex.
                         requestMatchers(WHITE_LIST_URL).permitAll()
-                        .requestMatchers( "/subscription/**").hasRole("MANSA-ADMIN-GR")
+//                        .requestMatchers( "/subscription/**").hasRole("MANSA-ADMIN-GR")
                         .anyRequest().authenticated())
                 .exceptionHandling(httpSecurityExceptionHandlingConfigurer ->
                         httpSecurityExceptionHandlingConfigurer

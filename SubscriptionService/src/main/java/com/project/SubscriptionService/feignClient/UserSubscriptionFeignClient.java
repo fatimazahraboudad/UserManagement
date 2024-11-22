@@ -14,4 +14,13 @@ public interface UserSubscriptionFeignClient {
     @GetMapping("/api/users/me/{idUser}")
     public ResponseEntity<UserDto> getUserById(@PathVariable String idUser);
 
+    @GetMapping("/api/users/me")
+    public ResponseEntity<UserDto> currentUser();
+
+    @GetMapping("/api/admin/{idUser}/{name}")
+    public ResponseEntity<UserDto> addAuthority(@PathVariable String idUser,@PathVariable String name);
+
+    @GetMapping("/api/admin/remove/{idUser}/{name}")
+    public ResponseEntity<UserDto> removeAuthority(@PathVariable String idUser,@PathVariable String name);
+
 }

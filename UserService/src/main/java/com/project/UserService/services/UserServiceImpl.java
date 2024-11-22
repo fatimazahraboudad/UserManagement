@@ -93,7 +93,7 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public UserDto updateUser(UserDto userDto) {
-        User user = helper(userDto.getIdUser());
+        User user = helper(getCurrentUser().getIdUser());
         user.setFirstName(userDto.getFirstName());
         user.setLastName(userDto.getLastName());
         user.setEmail(userDto.getEmail());
@@ -122,7 +122,12 @@ public class UserServiceImpl implements UserService{
     @Override
     public JwtAuthenticationResponse signIn(SignInRequest request)  {
 
-        if(!userRepository.findByEmailIgnoreCase(request.getEmail()).get().isEmailVerified()){
+        // Vérifier si l'utilisateur existe
+        User user = userRepository.findByEmailIgnoreCase(request.getEmail())
+                .orElseThrow(InvalidEmailOrPasswordException::new);
+
+        // Vérifier si l'email est vérifié
+        if (!user.isEmailVerified()) {
             throw new EmailNotVerifiedException();
         }
 
@@ -133,9 +138,9 @@ public class UserServiceImpl implements UserService{
                         request.getPassword()));
 
         log.info("User authenticated");
-        // Find user by email
-        User user = userRepository.findByEmailIgnoreCase(request.getEmail())
-                .orElseThrow(InvalidEmailOrPasswordException::new);
+//        // Find user by email
+//        User user = userRepository.findByEmailIgnoreCase(request.getEmail())
+//                .orElseThrow(InvalidEmailOrPasswordException::new);
 
         log.info("User found: {}", user.getEmail());
         // Check if 2FA is enabled

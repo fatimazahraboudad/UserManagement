@@ -71,8 +71,7 @@ public class SecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(ex -> ex.
                         requestMatchers(WHITE_LIST_URL).permitAll()
-                        //.requestMatchers(HttpMethod.GET, "/role/**").hasAnyRole(Varibales.ROLE_ADMIN)
-                        .requestMatchers( "/role/**").hasRole(Varibales.ROLE_ADMIN)
+//                        .requestMatchers( "/role/**").hasRole(Varibales.ROLE_ADMIN)
                         .anyRequest().authenticated())
                 .exceptionHandling(httpSecurityExceptionHandlingConfigurer ->
                         httpSecurityExceptionHandlingConfigurer
