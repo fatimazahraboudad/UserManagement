@@ -15,7 +15,7 @@ import java.util.Map;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(SubscriptionNotFoundException.class)
-    public ResponseEntity<String> handleUserNotFound(SubscriptionNotFoundException ex) {
+    public ResponseEntity<String> handleSubscriptionNotFound(SubscriptionNotFoundException ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
     }
 
@@ -30,6 +30,11 @@ public class GlobalExceptionHandler {
         String errorMessage = ex.contentUTF8();
         HttpStatus status = HttpStatus.valueOf(ex.status());
         return new ResponseEntity<>(errorMessage, status);
+    }
+
+    @ExceptionHandler(UserSubscriptionNotFoundException.class)
+    public ResponseEntity<String> handleUserSubscriptionNotFound(UserSubscriptionNotFoundException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

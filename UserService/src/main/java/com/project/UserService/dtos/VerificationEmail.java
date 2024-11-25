@@ -1,4 +1,4 @@
-package com.project.SubscriptionService.entities;
+package com.project.UserService.dtos;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,10 +11,10 @@ import java.time.LocalDateTime;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class EmailNotificationEvent {
+public class VerificationEmail {
     private String idUser;
     private String email;
     private String name;
-    private String status;
-    private LocalDateTime date;
+    private String token;
+    private LocalDateTime localDateTime;
 }

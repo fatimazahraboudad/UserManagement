@@ -28,8 +28,16 @@ spring:
       bindings:
         consumeNotif-in-0:
           destination: notification-topic
-          group: notification-consumers # Ajout d'un groupe pour le consommateur
-
+          group: subscription # Ajout d'un groupe pour le consommateur
+          content-type: application/json
+        consumeVerif-in-0:
+          destination: verification-topic
+          group: verification
+          content-type: application/json
+        consumeInvit-in-0:
+          destination: invitation-topic
+          group: invitation
+          content-type: application/json
       kafka:
         binder:
           brokers: localhost:9092

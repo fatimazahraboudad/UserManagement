@@ -1,12 +1,12 @@
 package com.project.UserService.services;
 
-import com.project.UserService.dtos.JwtAuthenticationResponse;
-import com.project.UserService.dtos.RoleDto;
-import com.project.UserService.dtos.SignInRequest;
-import com.project.UserService.dtos.UserDto;
+import com.project.UserService.dtos.*;
+import com.project.UserService.entities.AdminInvitation;
 import com.project.UserService.entities.Role;
 import com.project.UserService.entities.User;
 import com.project.UserService.exceptions.*;
+import com.project.UserService.feignClient.SubscriptionUserFeignClient;
+import com.project.UserService.mappers.AdminInvitationMapper;
 import com.project.UserService.mappers.RoleMapper;
 import com.project.UserService.mappers.UserMapper;
 import com.project.UserService.repositories.UserRepository;
@@ -19,6 +19,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -29,10 +30,7 @@ import jakarta.servlet.http.Cookie;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -48,10 +46,12 @@ public class UserServiceImpl implements UserService{
     private final JwtTokenProvider jwtTokenProvider;
     private final AuthenticationManager authenticationManager;
 
-    private final EmailService emailService;
+    //private final EmailService emailService;
     private final RoleService roleService;
     private final UserMapper userMapper;
     private final RoleMapper roleMapper;
+    private final SubscriptionUserFeignClient subscriptionUserFeignClient;
+    private final StreamBridge streamBridge;
 
     @Override
     public UserDto addUser(UserDto userDto) {
@@ -186,7 +186,14 @@ public class UserServiceImpl implements UserService{
     @Override
     public String verifyEmailWithSendingEmail(String idUser) {
         String token = generateToken(idUser);
-        emailService.sendVerificationEmail(helper(idUser),token);
+        //emailService.sendVerificationEmail(helper(idUser),token);
+        VerificationEmail  verificationEmail = new VerificationEmail();
+        verificationEmail.setIdUser(idUser);
+        verificationEmail.setEmail(helper(idUser).getEmail());
+        verificationEmail.setName(helper(idUser).getLastName());
+        verificationEmail.setToken(token);
+        verificationEmail.setLocalDateTime(LocalDateTime.now());
+        streamBridge.send("verification-topic",verificationEmail);
         return "please check your mail!";
     }
 
@@ -266,6 +273,12 @@ public class UserServiceImpl implements UserService{
          }
         return userMapper.toDto(userRepository.save(user));
     }
+
+    @Override
+    public List<SubscriptionDto> getUserSubscriptions() {
+        return subscriptionUserFeignClient.getSubscriptionByUser(getCurrentUser().getIdUser()).getBody();
+    }
+
 
 
 }

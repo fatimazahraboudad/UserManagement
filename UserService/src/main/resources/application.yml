@@ -18,10 +18,19 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         types.print.banner: false
         format_sql: true
-#  cloud:
-#    openfeign:
-#      circuitbreaker:
-#        enabled: true
+  cloud:
+    openfeign:
+      circuitbreaker:
+        enabled: true
+    stream:
+      bindings:
+        consumeVerif-out-0:
+          destination: verification-topic
+        consumeInvit-out-0:
+          destination: invitation-topic
+      kafka:
+        binder:
+          brokers: localhost:9092
 eureka:
   client:
     serviceUrl:

@@ -1,9 +1,6 @@
 package com.project.UserService.services;
 
-import com.project.UserService.dtos.JwtAuthenticationResponse;
-import com.project.UserService.dtos.RoleDto;
-import com.project.UserService.dtos.SignInRequest;
-import com.project.UserService.dtos.UserDto;
+import com.project.UserService.dtos.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -32,9 +29,10 @@ public interface UserService {
 
     UserDto getCurrentUser();
 
-
-
     UserDto addAuthority(String idUser, String role);
     UserDto removeAuthority(String idUser, String role);
+
+    List<SubscriptionDto> getUserSubscriptions();
+
 
 }

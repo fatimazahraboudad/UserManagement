@@ -132,6 +132,8 @@ public class JwtTokenProvider {
     }
 
 
+
+
     private PrivateKey loadPrivateKey(String path) throws Exception {
         // Charger la clé privée depuis le fichier
         String key = new String(Files.readAllBytes(Paths.get(path)), StandardCharsets.UTF_8);
@@ -169,5 +171,13 @@ public class JwtTokenProvider {
         X509EncodedKeySpec keySpec = new X509EncodedKeySpec(decodedKey);
         KeyFactory keyFactory = KeyFactory.getInstance("RSA");
         return keyFactory.generatePublic(keySpec);
+    }
+
+    public String generateAdminInvitationToken(String id){
+        return Jwts.builder()
+                .setSubject(id)
+                .setIssuedAt(new Date())
+                .signWith(getSignKey(), SignatureAlgorithm.HS256)
+                .compact();
     }
 }

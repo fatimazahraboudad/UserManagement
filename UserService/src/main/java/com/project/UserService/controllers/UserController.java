@@ -1,12 +1,7 @@
 package com.project.UserService.controllers;
 
-import com.project.UserService.dtos.JwtAuthenticationResponse;
-import com.project.UserService.dtos.RoleDto;
-import com.project.UserService.dtos.SignInRequest;
-import com.project.UserService.dtos.UserDto;
-import com.project.UserService.services.EmailService;
+import com.project.UserService.dtos.*;
 import com.project.UserService.services.UserService;
-import io.jsonwebtoken.Jwts;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
@@ -26,7 +20,7 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
-    private final EmailService emailService;
+
 
     @PostMapping("/users/register")
     public ResponseEntity<UserDto> addNewUser(@Validated @RequestBody UserDto userDto) {
@@ -102,6 +96,14 @@ public class UserController {
     public ResponseEntity<UserDto> removeAuthority(@PathVariable String idUser,@PathVariable String name) {
         return new ResponseEntity<>(userService.removeAuthority(idUser,name), HttpStatus.OK);
     }
+
+    @PreAuthorize("hasRole(@R.ROLE_GUEST) or hasRole(@R.ROLE_ADMIN) or hasRole(@R.ROLE_SUBSCRIBER)")
+    @GetMapping("/users/subscription")
+    public ResponseEntity<List<SubscriptionDto>> getUserSubscription() {
+        return new ResponseEntity<>(userService.getUserSubscriptions(), HttpStatus.OK);
+    }
+
+
 
 
 

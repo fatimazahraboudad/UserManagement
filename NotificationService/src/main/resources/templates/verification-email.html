@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Email verification</title>
+</head>
+<body>
+<h1 th:text="'Hello, ' + ${name} + '!'"></h1>
+<div class="email-content">
+    <p>
+        Thank you for signing up! To complete your registration, please verify your email address by clicking the link below.
+    </p>
+    <p style="text-align: center;">
+        <a th:href="'http://localhost:8081/api/users/verify/' + ${token}"
+           href="http://localhost:8081/api/users/verify/[token]"
+           class="verification-link">
+            Verify Email
+        </a>
+    </p>
+</div>
+</body>
+</html>

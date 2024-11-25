@@ -2,17 +2,15 @@ package com.project.SubscriptionService.services;
 
 import com.project.SubscriptionService.Enum.EsubscriptionStatus;
 import com.project.SubscriptionService.dtos.SubscriptionDto;
-import com.project.SubscriptionService.dtos.UserDto;
 import com.project.SubscriptionService.entities.EmailNotificationEvent;
 import com.project.SubscriptionService.entities.Subscription;
 import com.project.SubscriptionService.exceptions.SubscriptionNotFoundException;
+import com.project.SubscriptionService.exceptions.UserSubscriptionNotFoundException;
 import com.project.SubscriptionService.feignClient.UserSubscriptionFeignClient;
 import com.project.SubscriptionService.mappers.SubscriptionMapper;
 import com.project.SubscriptionService.repositories.SubscriptionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cloud.stream.function.StreamBridge;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,7 +28,6 @@ public class SubscriptionServiceImpl implements SubscriptionService{
     private final SubscriptionRepository subscriptionRepository;
     private final SubscriptionMapper subscriptionMapper;
     private final UserSubscriptionFeignClient userSubscriptionFeignClient;
-    private final EmailNotificationService emailNotificationService;
     private final StreamBridge streamBridge;
 
 
@@ -90,6 +87,7 @@ public class SubscriptionServiceImpl implements SubscriptionService{
 
 
         EmailNotificationEvent event = new EmailNotificationEvent(
+                subscriptionDto.getUserDto().getIdUser(),
                 subscriptionDto.getUserDto().getEmail(),
                 subscriptionDto.getUserDto().getLastName(),
                 "APPROVED",
@@ -109,6 +107,7 @@ public class SubscriptionServiceImpl implements SubscriptionService{
         subscriptionDto.setUserDto(userSubscriptionFeignClient.getUserById(helper(idSubscription).getIdUser()).getBody());
 
         EmailNotificationEvent event = new EmailNotificationEvent(
+                subscriptionDto.getUserDto().getIdUser(),
                 subscriptionDto.getUserDto().getEmail(),
                 subscriptionDto.getUserDto().getLastName(),
                 "REJECTED",
@@ -117,6 +116,12 @@ public class SubscriptionServiceImpl implements SubscriptionService{
         streamBridge.send("notification-topic", event);
 
         return subscriptionDto;
+    }
+
+    @Override
+    public List<SubscriptionDto> getSubscriptionByUserId(String idUser) {
+        List<Subscription> subscriptionList = subscriptionRepository.findByIdUser(idUser).orElseThrow(()->new UserSubscriptionNotFoundException(idUser));
+        return subscriptionMapper.toDtos(subscriptionList);
     }
 
     public Subscription helper(String idSubscription) {
