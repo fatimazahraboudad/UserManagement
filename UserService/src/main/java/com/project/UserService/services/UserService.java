@@ -34,5 +34,9 @@ public interface UserService {
 
     List<SubscriptionDto> getUserSubscriptions();
 
+    UserDto getUserByEmail(String email);
+
+    UserDto createInviteAccount(UserDto userDto);
+
 
 }

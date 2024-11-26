@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Create Account</title>
+</head>
+<body>
+<h1>Create Your Account</h1>
+<form th:action="@{/createInviteAccount}" method="post">
+
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="email" th:value="${email}" readonly />
+
+    <label for="firstName">First Name:</label>
+    <input type="text" id="firstName" name="firstName" required />
+
+    <label for="lastName">Last Name:</label>
+    <input type="text" id="lastName" name="lastName" required />
+
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="password" required />
+
+    <button type="submit">Create Account</button>
+</form>
+</body>
+</html>

@@ -42,7 +42,9 @@ public class SecurityConfig {
             "/users/logout",
             "/users/register",
             "/users/login",
-            "/users/verify/**"
+            "/users/verify/**",
+            "/admin/invite/verify/**",
+            "/users/createInviteAccount"
     };
 
     private final UserRepository userRepository;

@@ -116,9 +116,6 @@ public class UserServiceImpl implements UserService{
         return userRepository.findById(idUser).orElseThrow(() -> new UserNotFoundException(idUser));
     }
 
-
-
-
     @Override
     public JwtAuthenticationResponse signIn(SignInRequest request)  {
 
@@ -280,5 +277,24 @@ public class UserServiceImpl implements UserService{
     }
 
 
+    @Override
+    public UserDto getUserByEmail(String email) {
+        User user= userRepository.findByEmail(email);
+        return userMapper.toDto(user);
+    }
+
+    @Override
+    public UserDto createInviteAccount(UserDto userDto) {
+        User user = userMapper.toEntity(userDto);
+        user.setIdUser(UUID.randomUUID().toString());
+        user.setEnabled(true);
+        user.setEmailVerified(true);
+        user.setPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
+        if (user.getRole() == null) {
+            user.setRole(new HashSet<>());
+        }
+        user.getRole().add(roleMapper.toEntity(roleService.getRoleByName(Varibales.ROLE_ADMIN)));
+        return userMapper.toDto(userRepository.save(user));
+    }
 
 }

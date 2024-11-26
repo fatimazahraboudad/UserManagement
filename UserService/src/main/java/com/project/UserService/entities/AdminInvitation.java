@@ -20,6 +20,8 @@ public class AdminInvitation {
     @Id
     private String idAdminInvitation;
     private String email;
+
+    @Enumerated(EnumType.STRING)
     private EadminInvitationStatus Status;
 
     @ManyToOne

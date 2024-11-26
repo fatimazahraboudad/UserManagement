@@ -64,6 +64,10 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleRoleAlreadyExist(RoleAlreadyExist ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
+    @ExceptionHandler(InvitationAlreadyAcceptedException.class)
+    public ResponseEntity<String> handleInvitationAlreadyAcceptedException(InvitationAlreadyAcceptedException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+    }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {

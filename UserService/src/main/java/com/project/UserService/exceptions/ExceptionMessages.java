@@ -16,7 +16,8 @@ public enum ExceptionMessages {
     USER_ALREADY_HAVE_ROLE("user with id %s already have %s role"),
     ROLE_NOT_FOUND("Role with id %s not found."),
     ROLE_NOT_FOUND_WITH_NAME("Role not found."),
-    ROLE_ALREADY_EXIST("Role with name %s already exist.");
+    ROLE_ALREADY_EXIST("Role with name %s already exist."),
+    INVITATION_ALREADY_ACCEPTED("invitation already accepted");
 
 
     private final String message;
