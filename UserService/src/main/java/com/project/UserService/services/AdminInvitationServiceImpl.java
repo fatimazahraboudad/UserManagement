@@ -7,6 +7,7 @@ import com.project.UserService.dtos.VerificationEmail;
 import com.project.UserService.entities.AdminInvitation;
 import com.project.UserService.entities.User;
 import com.project.UserService.exceptions.InvitationAlreadyAcceptedException;
+import com.project.UserService.exceptions.RolesException;
 import com.project.UserService.exceptions.TokenExpiredException;
 import com.project.UserService.mappers.AdminInvitationMapper;
 import com.project.UserService.mappers.UserMapper;
@@ -47,20 +48,32 @@ public class AdminInvitationServiceImpl implements AdminInvitationService{
     @Override
     @Transactional
     public AdminInvitationDto sendInvitation(AdminInvitationDto adminInvitationDto) {
+        UserDto user = userService.getUserByEmail(adminInvitationDto.getEmail());
+        if (user!= null && user.getRole().stream().anyMatch(
+                role1 -> role1.getName().equals(Varibales.ROLE_ADMIN))) {
+            throw new RolesException(user.getIdUser(),Varibales.ROLE_ADMIN);
+        }
         AdminInvitation adminInvitation = adminInvitationMapper.toEntity(adminInvitationDto);
         adminInvitation.setIdAdminInvitation(UUID.randomUUID().toString());
         adminInvitation.setUser(userMapper.toEntity(userService.getCurrentUser()));
         adminInvitation.setStatus(EadminInvitationStatus.PENDING);
         AdminInvitation adminInvitationSaved = adminInvitationRepository.save(adminInvitation);
 
+        generateAdminInvitation(adminInvitationSaved.getEmail(), adminInvitationSaved.getIdAdminInvitation());
+        return adminInvitationMapper.toDto(adminInvitationSaved);
+    }
+
+
+    public void generateAdminInvitation(String email, String idAdminInvitation) {
+
         VerificationEmail invitationEmail = new VerificationEmail();
-        invitationEmail.setEmail(adminInvitationSaved.getEmail());
-        invitationEmail.setIdUser(adminInvitationSaved.getIdAdminInvitation());
-        invitationEmail.setToken(generateToken(adminInvitationSaved.getIdAdminInvitation()));
+        invitationEmail.setEmail(email);
+        invitationEmail.setIdUser(idAdminInvitation);
+        invitationEmail.setToken(generateToken(idAdminInvitation));
         invitationEmail.setLocalDateTime(LocalDateTime.now());
 
         streamBridge.send("invitation-topic", invitationEmail);
-        return adminInvitationMapper.toDto(adminInvitationSaved);
+
     }
 
     @Override

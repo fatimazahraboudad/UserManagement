@@ -248,12 +248,12 @@ public class UserServiceImpl implements UserService{
         User user=helper(idUser);
         Role addRole=roleMapper.toEntity(roleService.getRoleByName(role));
         if(role != null) {
-            if(user.getRole()
-                    .stream()
-                    .anyMatch(
-                        role1 -> role1.getIdRole().equals(addRole.getIdRole()))) {
-                throw new RolesException(idUser, role);
-            }
+//            if(user.getRole()
+//                    .stream()
+//                    .anyMatch(
+//                        role1 -> role1.getIdRole().equals(addRole.getIdRole()))) {
+//                throw new RolesException(idUser, role);
+//            }
           user.getRole().add(addRole);
         }
         return userMapper.toDto(userRepository.save(user));

@@ -62,7 +62,7 @@ public class SubscriptionController {
 
 
 
-    @PreAuthorize("hasRole('MANSA-ADMIN-GR')")
+    @PreAuthorize("hasRole('MANSA-SUBSCRIBER-GR')")
     @GetMapping("/admin/subscriptions/user/{idUser}")
     public ResponseEntity<List<SubscriptionDto>> getSubscriptionByUser(@PathVariable String idUser) {
         return new ResponseEntity<>(subscriptionService.getSubscriptionByUserId(idUser), HttpStatus.OK);

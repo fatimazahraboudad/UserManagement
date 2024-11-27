@@ -36,7 +36,7 @@ public class UserController {
         return new ResponseEntity<>(userService.getAllUsers(), HttpStatus.OK);
     }
 
-    @PreAuthorize("hasRole(@R.ROLE_ADMIN)")
+    @PreAuthorize("hasRole(@R.ROLE_GUEST) or hasRole(@R.ROLE_ADMIN) or hasRole(@R.ROLE_SUBSCRIBER)")
     @GetMapping("/users/me/{idUser}")
     public ResponseEntity<UserDto> getUserById(@PathVariable String idUser) {
         return new ResponseEntity<>(userService.getUserById(idUser), HttpStatus.OK);

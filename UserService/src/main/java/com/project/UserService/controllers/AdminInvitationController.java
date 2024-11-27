@@ -59,6 +59,9 @@ public class AdminInvitationController {
             @RequestParam String password) {
 
         try {
+
+            if(userService.getUserByEmail(email)!= null)
+                return new ModelAndView("error").addObject("message", "Invitation already accepted.");
             UserDto userDto = new UserDto();
             userDto.setEmail(email);
             userDto.setFirstName(firstName);

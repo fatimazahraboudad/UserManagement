@@ -44,6 +44,7 @@ public class SubscriptionServiceImpl implements SubscriptionService{
         return subscriptionDto1;
     }
 
+
     @Override
     public SubscriptionDto getById(String idSubscription) {
         SubscriptionDto subscriptionDto = subscriptionMapper.toDto(helper(idSubscription));

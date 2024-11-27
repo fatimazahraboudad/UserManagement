@@ -1,7 +1,56 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
-    <title>Email verification</title>
+    <title>Email Verification</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        h1 {
+            color: #444;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .email-content {
+            max-width: 600px;
+            margin: 20px auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .email-content p {
+            margin: 15px 0;
+            font-size: 16px;
+        }
+
+        .verification-link {
+            display: inline-block;
+            padding: 12px 25px;
+            font-size: 16px;
+            color: #fff;
+            background-color: #28a745; /* Vert */
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        .verification-link:hover {
+            background-color: #218838; /* Vert foncé */
+        }
+
+        .email-content p:last-child {
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
 <h1 th:text="'Hello, ' + ${name} + '!'"></h1>

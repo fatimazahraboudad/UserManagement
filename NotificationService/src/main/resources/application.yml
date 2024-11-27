@@ -41,11 +41,8 @@ spring:
       kafka:
         binder:
           brokers: localhost:9092
-#  thymeleaf:
-#    prefix: classpath:/templates/
-#    suffix: .html
-#    mode: HTML
-#    encoding: UTF-8
+    function:
+      definition: consumeNotif;consumeVerif;consumeInvit
 
 eureka:
   client:

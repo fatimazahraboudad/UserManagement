@@ -24,52 +24,48 @@ public class EmailConsumer {
 
     private final EmailTemplateService emailTemplateService;
     private final EmailSenderService emailSenderService;
-    private final EmailSubscriptionRepository emailSubscriptionRepository;
 
 
-//    @Bean
-//    @Transactional
-//    public Consumer<EmailNotificationEvent> consumeNotif() {
-//        return event -> {
-//            try {
-//                // Générer le contenu de l'email en utilisant le template
-//                String emailContent = emailTemplateService.buildEmail(event.getName(), event.getStatus());
-//
-//                // Envoyer l'email
-//                emailSenderService.sendEmail(
-//                        event.getEmail(),
-//                        "Subscription " + event.getStatus(),
-//                        emailContent
-//                );
-//                event.setId(UUID.randomUUID().toString());
-////                event.setContent(emailContent);
-//                emailSubscriptionRepository.save(event);
-//
-//                System.out.println("Email sent successfully to " + event.getEmail());
-//            } catch (Exception e) {
-//                System.err.println("Failed to process email notification: " + e.getMessage());
-//            }
-//        };
-//    }
-//
-//    @Bean
-//    public Consumer<VerificationEmail> consumeVerif() {
-//        return event -> {
-//            try {
-//                String emailContent = emailTemplateService.buildEmailForVerification(event.getName(), event.getToken());
-//
-//                emailSenderService.sendEmail(
-//                        event.getEmail(),
-//                        "Email Verification",
-//                        emailContent
-//                );
-//
-//                System.out.println("Email sent successfully to " + event.getEmail());
-//            } catch (Exception e) {
-//                System.err.println("Failed to process email notification: " + e.getMessage());
-//            }
-//        };
-//    }
+    @Bean
+    @Transactional
+    public Consumer<EmailNotificationEvent> consumeNotif() {
+        return event -> {
+            try {
+                // Générer le contenu de l'email en utilisant le template
+                String emailContent = emailTemplateService.buildEmail(event.getName(), event.getStatus());
+
+                // Envoyer l'email
+                emailSenderService.sendEmail(
+                        event.getEmail(),
+                        "Subscription " + event.getStatus(),
+                        emailContent
+                );
+
+                System.out.println("Email sent successfully to " + event.getEmail());
+            } catch (Exception e) {
+                System.err.println("Failed to process email notification: " + e.getMessage());
+            }
+        };
+    }
+
+    @Bean
+    public Consumer<VerificationEmail> consumeVerif() {
+        return event -> {
+            try {
+                String emailContent = emailTemplateService.buildEmailForVerification(event.getName(), event.getToken());
+
+                emailSenderService.sendEmail(
+                        event.getEmail(),
+                        "Email Verification",
+                        emailContent
+                );
+
+                System.out.println("Email sent successfully to " + event.getEmail());
+            } catch (Exception e) {
+                System.err.println("Failed to process email notification: " + e.getMessage());
+            }
+        };
+    }
 
     @Bean
     public Consumer<VerificationEmail> consumeInvit() {

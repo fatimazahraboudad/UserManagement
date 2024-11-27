@@ -2,16 +2,59 @@
 <html xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <title>Subscription {{status}}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        h1 {
+            color: #444;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        p {
+            font-size: 16px;
+            text-align: center;
+            margin: 20px;
+        }
+
+        .status-approved {
+            color: #28a745; /* Vert */
+            font-weight: bold;
+        }
+
+        .status-rejected {
+            color: #dc3545; /* Rouge */
+            font-weight: bold;
+        }
+
+        .email-content {
+            max-width: 600px;
+            margin: 20px auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+    </style>
 </head>
 <body>
 <h1 th:text="'Hello, ' + ${name} + '!'"></h1>
-<p>
-    <span th:if="${status == 'APPROVED'}">
-        Your subscription has been <strong>approved</strong>. Thank you for choosing our service!
-    </span>
-    <span th:if="${status == 'REJECTED'}">
-        We're sorry, your subscription has been <strong>rejected</strong>. If you have any questions, please contact our support team.
-    </span>
-</p>
+<div class="email-content">
+    <p>
+        <span th:if="${status == 'APPROVED'}" class="status-approved">
+            Your subscription has been <strong>approved</strong>. Thank you for choosing our service!
+        </span>
+        <span th:if="${status == 'REJECTED'}" class="status-rejected">
+            We're sorry, your subscription has been <strong>rejected</strong>. If you have any questions, please contact our support team.
+        </span>
+    </p>
+</div>
 </body>
 </html>
