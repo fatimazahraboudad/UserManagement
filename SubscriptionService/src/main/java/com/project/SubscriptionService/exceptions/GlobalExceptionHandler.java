@@ -24,6 +24,18 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.SERVICE_UNAVAILABLE);
     }
 
+//    @ExceptionHandler(FeignException.class)
+//    public ResponseEntity<String> handleFeignException(FeignException e) {
+//        int statusCode = e.status(); // FeignException fournit le statut
+//
+//        // Vérifier si le code de statut est valide
+//        HttpStatus status = HttpStatus.resolve(statusCode);
+//        if (status == null) {
+//            status = HttpStatus.INTERNAL_SERVER_ERROR; // Utiliser 500 par défaut si le code est invalide
+//        }
+//
+//        return new ResponseEntity<>(e.getMessage(), status);
+//    }
 
     @ExceptionHandler(FeignException.class)
     public ResponseEntity<String> handleFeignException(FeignException ex) {

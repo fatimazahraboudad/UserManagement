@@ -47,3 +47,4 @@ token:
     expiration: 1200000 #604800000    # 1 day for access token
     refresh-token:
       expiration: 3600000  # 1 hour for refresh toke
+

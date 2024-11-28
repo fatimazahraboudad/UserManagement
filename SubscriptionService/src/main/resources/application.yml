@@ -21,10 +21,10 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         types.print.banner: false
         format_sql: true
-  openfeign:
-    circuitbreaker:
-      enabled: true
   cloud:
+    openfeign:
+      circuitbreaker:
+        enabled: true
     stream:
       bindings:
         consumeNotif-out-0:

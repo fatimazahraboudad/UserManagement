@@ -100,7 +100,7 @@ public class UserController {
         return new ResponseEntity<>(userService.removeAuthority(idUser,name), HttpStatus.OK);
     }
 
-    @PreAuthorize("hasRole(@R.ROLE_GUEST) or hasRole(@R.ROLE_ADMIN) or hasRole(@R.ROLE_SUBSCRIBER)")
+    @PreAuthorize("hasRole(@R.ROLE_SUBSCRIBER)")
     @GetMapping("/users/subscription")
     public ResponseEntity<List<SubscriptionDto>> getUserSubscription() {
         return new ResponseEntity<>(userService.getUserSubscriptions(), HttpStatus.OK);

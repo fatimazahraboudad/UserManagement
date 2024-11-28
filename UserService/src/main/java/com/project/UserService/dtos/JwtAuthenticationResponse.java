@@ -12,7 +12,6 @@ public class JwtAuthenticationResponse {
     private String accessToken;
     private String refreshToken;
     private UserDto users;
-    private boolean mfaEnabled;
-    private String secretImageUri;
+
 
 }
