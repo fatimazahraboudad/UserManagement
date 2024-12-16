@@ -46,7 +46,6 @@ public class UserServiceImpl implements UserService{
     private final JwtTokenProvider jwtTokenProvider;
     private final AuthenticationManager authenticationManager;
 
-    //private final EmailService emailService;
     private final RoleService roleService;
     private final UserMapper userMapper;
     private final RoleMapper roleMapper;
@@ -117,7 +116,7 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public JwtAuthenticationResponse signIn(SignInRequest request)  {
+    public JwtAuthenticationResponse signIn(SignInRequest request) throws Exception {
 
         // Vérifier si l'utilisateur existe
         User user = userRepository.findByEmailIgnoreCase(request.getEmail())
@@ -135,12 +134,8 @@ public class UserServiceImpl implements UserService{
                         request.getPassword()));
 
         log.info("User authenticated");
-//        // Find user by email
-//        User user = userRepository.findByEmailIgnoreCase(request.getEmail())
-//                .orElseThrow(InvalidEmailOrPasswordException::new);
 
         log.info("User found: {}", user.getEmail());
-        // Check if 2FA is enabled
 
         // If 2FA is not enabled, proceed with generating tokens
         String jwt = jwtTokenProvider.generateAccessToken(user);

@@ -95,7 +95,6 @@ public class SecurityConfig {
         return http.build();
     }
 
-
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
@@ -115,6 +114,7 @@ public class SecurityConfig {
         return username -> userRepository.findByEmailIgnoreCase(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
+
 
     @Bean
     public CorsConfigurationSource configurationSource() {

@@ -55,7 +55,7 @@ public class UserController {
     }
 
     @PostMapping("/users/login")
-    public ResponseEntity<JwtAuthenticationResponse> login(@RequestBody SignInRequest singInd)  {
+    public ResponseEntity<JwtAuthenticationResponse> login(@RequestBody SignInRequest singInd) throws Exception {
         return new ResponseEntity<>(userService.signIn(singInd), HttpStatus.OK);
     }
 
@@ -66,10 +66,6 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body("Logged out successfully");
     }
 
-//    @GetMapping("/token/{idUser}")
-//    public ResponseEntity<String> token(@PathVariable String idUser) {
-//        return ResponseEntity.status(HttpStatus.OK).body(userService.generateToken(idUser));
-//    }
 
     @GetMapping("/users/verify/mail/{idUser}")
     public ResponseEntity<String> verify(@PathVariable String idUser) {

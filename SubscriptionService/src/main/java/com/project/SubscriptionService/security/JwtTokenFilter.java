@@ -1,5 +1,6 @@
 package com.project.SubscriptionService.security;
 
+import com.project.SubscriptionService.utils.LoadKeys;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
@@ -29,7 +30,7 @@ import java.util.stream.Collectors;
 public class JwtTokenFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider jwtTokenProvider;
-
+    private final LoadKeys loadKeys;
     @Value("${token.public.key}")
     private String publicKeyPath;
 
@@ -49,7 +50,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         String token = authHeader.substring(7);
         try {
             if (publicKey == null) {
-                publicKey = jwtTokenProvider.loadPublicKey(publicKeyPath);
+                publicKey = loadKeys.loadPublicKey(publicKeyPath);
             }
 
             String userEmail = jwtTokenProvider.extractUsername(token, publicKey);
@@ -89,7 +90,6 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             return;
         }
 
-        // Continuer la chaîne de filtres
         filterChain.doFilter(request, response);
     }
 

@@ -18,7 +18,7 @@ public interface UserService {
 
     UserDto updateStatus(String idUser);
 
-    JwtAuthenticationResponse signIn(SignInRequest request);
+    JwtAuthenticationResponse signIn(SignInRequest request) throws Exception;
     void logout(HttpServletRequest request, HttpServletResponse response);
 
     String generateToken(String idUser);
