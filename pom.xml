@@ -22,6 +22,7 @@
         <module>AuthorizationService</module>
         <module>SubscriptionService</module>
         <module>NotificationService</module>
+        <module>CompanyService</module>
     </modules>
 
     <properties>

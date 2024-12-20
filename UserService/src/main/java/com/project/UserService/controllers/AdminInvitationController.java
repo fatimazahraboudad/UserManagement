@@ -1,6 +1,7 @@
 package com.project.UserService.controllers;
 
 import com.project.UserService.Enum.EadminInvitationStatus;
+import com.project.UserService.annotation.LogRequest;
 import com.project.UserService.dtos.AdminInvitationDto;
 import com.project.UserService.dtos.UserDto;
 import com.project.UserService.services.AdminInvitationService;
@@ -26,6 +27,7 @@ public class AdminInvitationController {
     private final UserService userService;
 
 
+    @LogRequest(action = "send admin invitation to user")
     @PreAuthorize("hasRole(@R.ROLE_ADMIN)")
     @PostMapping("/admin/invite")
     public ResponseEntity<AdminInvitationDto> inviteAdmin(@RequestBody AdminInvitationDto adminInvitationDto) {
@@ -37,12 +39,14 @@ public class AdminInvitationController {
         return adminInvitationService.verifyInvitation(token);
     }
 
+    @LogRequest(action = "get all invitation")
     @PreAuthorize("hasRole(@R.ROLE_ADMIN)")
     @GetMapping("admin/invite")
     public ResponseEntity<List<AdminInvitationDto>> getAllInvitation() {
         return new ResponseEntity<>(adminInvitationService.allInvitation(), HttpStatus.OK);
     }
 
+    @LogRequest(action = "get invitation by id")
     @PreAuthorize("hasRole(@R.ROLE_ADMIN)")
     @GetMapping("/admin/invite/{idAdminInvitation}")
     public ResponseEntity<AdminInvitationDto> getInvitationById(@PathVariable String idAdminInvitation) {

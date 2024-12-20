@@ -1,4 +1,4 @@
-package com.project.SubscriptionService.exceptions;
+package com.project.CompanyService.exceptions;
 
 import feign.FeignException;
 import org.springframework.http.HttpStatus;
@@ -14,16 +14,20 @@ import java.util.Map;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(SubscriptionNotFoundException.class)
-    public ResponseEntity<String> handleSubscriptionNotFound(SubscriptionNotFoundException ex) {
+    @ExceptionHandler(CompanyNotFoundException.class)
+    public ResponseEntity<String> handleCompanyNotFound(CompanyNotFoundException ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(CompanyAlreadyExistException.class)
+    public ResponseEntity<String> handleCompanyAlreadyExist(CompanyAlreadyExistException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(SomethingWrongException.class)
     public ResponseEntity<String> handleSomethingWrong(SomethingWrongException ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.SERVICE_UNAVAILABLE);
     }
-
 
     @ExceptionHandler(FeignException.class)
     public ResponseEntity<String> handleFeignException(FeignException ex) {
@@ -32,10 +36,6 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorMessage, status);
     }
 
-    @ExceptionHandler(UserSubscriptionNotFoundException.class)
-    public ResponseEntity<String> handleUserSubscriptionNotFound(UserSubscriptionNotFoundException ex) {
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
-    }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {

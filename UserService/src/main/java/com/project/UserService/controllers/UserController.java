@@ -1,6 +1,8 @@
 package com.project.UserService.controllers;
 
+import com.project.UserService.annotation.LogRequest;
 import com.project.UserService.dtos.*;
+import com.project.UserService.services.AuditLogService;
 import com.project.UserService.services.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -9,10 +11,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
 
@@ -25,40 +25,47 @@ public class UserController {
     private final UserService userService;
 
 
+    @LogRequest(action = "user register")
     @PostMapping("/users/register")
     public ResponseEntity<UserDto> addNewUser(@Validated @RequestBody UserDto userDto) {
         return new ResponseEntity<>(userService.addUser(userDto), HttpStatus.CREATED);
     }
 
+    @LogRequest(action = "get all users")
     @PreAuthorize("hasRole(@R.ROLE_ADMIN)")
     @GetMapping("/admin/users")
     public ResponseEntity<List<UserDto>> getAllUsers() {
         return new ResponseEntity<>(userService.getAllUsers(), HttpStatus.OK);
     }
 
+    @LogRequest(action = "get user by id")
     @PreAuthorize("hasRole(@R.ROLE_GUEST) or hasRole(@R.ROLE_ADMIN) or hasRole(@R.ROLE_SUBSCRIBER)")
     @GetMapping("/users/me/{idUser}")
     public ResponseEntity<UserDto> getUserById(@PathVariable String idUser) {
         return new ResponseEntity<>(userService.getUserById(idUser), HttpStatus.OK);
     }
 
+    @LogRequest(action = "update profile")
     @PreAuthorize("hasRole(@R.ROLE_GUEST) or hasRole(@R.ROLE_ADMIN) or hasRole(@R.ROLE_SUBSCRIBER)")
     @PutMapping("/users/me")
     public ResponseEntity<UserDto> UpdateProfile(@Validated @RequestBody UserDto userDto) {
         return new ResponseEntity<>(userService.updateUser(userDto), HttpStatus.OK);
     }
 
+    @LogRequest(action = "update user status")
     @PreAuthorize("hasRole(@R.ROLE_ADMIN)")
     @PutMapping("/admin/users/{idUser}/status")
     public ResponseEntity<UserDto> UpdateStatus(@PathVariable String idUser)  {
         return new ResponseEntity<>(userService.updateStatus(idUser), HttpStatus.OK);
     }
 
+    @LogRequest(action = "login")
     @PostMapping("/users/login")
     public ResponseEntity<JwtAuthenticationResponse> login(@RequestBody SignInRequest singInd) throws Exception {
         return new ResponseEntity<>(userService.signIn(singInd), HttpStatus.OK);
     }
 
+    @LogRequest(action = "logout")
     @GetMapping("/users/logout")
     public ResponseEntity<String> logout(HttpServletRequest request, HttpServletResponse response) {
         userService.logout(request, response);
@@ -84,18 +91,21 @@ public class UserController {
         return new ResponseEntity<>(userService.getCurrentUser(), HttpStatus.OK);
     }
 
+    @LogRequest(action = "add Authority to user")
     @PreAuthorize("hasRole(@R.ROLE_ADMIN)")
     @GetMapping("/admin/{idUser}/{name}")
     public ResponseEntity<UserDto> addAuthority(@PathVariable String idUser,@PathVariable String name) {
         return new ResponseEntity<>(userService.addAuthority(idUser,name), HttpStatus.OK);
     }
 
+    @LogRequest(action = "remove Authority from user")
     @PreAuthorize("hasRole(@R.ROLE_ADMIN)")
     @GetMapping("/admin/remove/{idUser}/{name}")
     public ResponseEntity<UserDto> removeAuthority(@PathVariable String idUser,@PathVariable String name) {
         return new ResponseEntity<>(userService.removeAuthority(idUser,name), HttpStatus.OK);
     }
 
+    @LogRequest(action = "get user subscription")
     @PreAuthorize("hasRole(@R.ROLE_SUBSCRIBER)")
     @GetMapping("/users/subscription")
     public ResponseEntity<List<SubscriptionDto>> getUserSubscription() {
